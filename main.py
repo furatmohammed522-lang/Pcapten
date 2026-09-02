@@ -1,3 +1,4 @@
+import os
 import base64
 import json
 import sqlite3
@@ -8,7 +9,7 @@ from telebot import types
 
 TOKEN = "8926250265:AAF_DY8uxukj-DLSBsJB9w5Ml6-_Ma7XpqM"
 ADMIN_CHAT_ID = "582282128"
-GEMINI_API_KEY =
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
 bot = telebot.TeleBot(TOKEN)
 user_data = {}
