@@ -7,7 +7,7 @@ import requests
 import telebot
 from telebot import types
 
-TOKEN = "8926250265:AAF_DY8uxukj-DLSBsJB9w5Ml6-_Ma7XpqM"
+TOKEN = "8926250265:AAGnD4oGlgcOJBtHZ60n5A9UxlrnVtCHvbM"
 ADMIN_CHAT_ID = "582282128"
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
