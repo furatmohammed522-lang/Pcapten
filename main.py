@@ -1,10 +1,11 @@
-import os
 import requests
 import telebot
 from telebot import types
 
 TOKEN = "8926250265:AAGnD4oGlgcOJBtHZ60n5A9UxlrnVtCHvbM"
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+
+# دمجنا المفتاح مباشرة هنا حتى يشتغل فوراً بدون مشاكل قراءة المتغيرات
+OPENAI_API_KEY = ""
 
 bot = telebot.TeleBot(TOKEN)
 user_data = {}
