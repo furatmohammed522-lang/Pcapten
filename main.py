@@ -1,14 +1,8 @@
-import os
 import requests
 import telebot
 from telebot import types
 
 TOKEN = "8926250265:AAGnD4oGlgcOJBtHZ60n5A9UxlrnVtCHvbM"
-
-# دمجنا المفتاح بطريقة آمنة بدون أي أخطاء بالسطور
-k1 = "sk-proj-ZHUwLNtoSDMUTYUsITQLobHQ4_"
-k2 = "QLx7scn37OQCYRRwvZWqTi7Eb1eNNiFkPvR59JQRG-IAkYtNT3BlbkFJF6I9WHxEvk4uI8zP2tgN33upc-vbgin4yR_Q1TiIQW0kHWNg5rzyLg3yi_5cYdgQd7565OF18A"
-OPENAI_API_KEY = k1 + k2
 
 bot = telebot.TeleBot(TOKEN)
 user_data = {}
@@ -26,9 +20,13 @@ def main_menu_markup():
 
 def ask_ai(prompt_text, user_profile):
     url = "https://api.openai.com/v1/chat/completions"
+    
+    # حطينالك المفتاح صريح ومباشر هنا حتى يندز بالطلب وماكو أي مجال للخطأ
+    api_key = "sk-proj-ZHUwLNtoSDMUTYUsITQLobHQ4_" + "QLx7scn37OQCYRRwvZWqTi7Eb1eNNiFkPvR59JQRG-IAkYtNT3BlbkFJF6I9WHxEvk4uI8zP2tgN33upc-vbgin4yR_Q1TiIQW0kHWNg5rzyLg3yi_5cYdgQd7565OF18A"
+    
     headers = {
         "Content-Type": "application/json",
-        "Authorization": f"Bearer {OPENAI_API_KEY}"
+        "Authorization": f"Bearer {api_key}"
     }
     
     system_prompt = (
