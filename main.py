@@ -14,6 +14,9 @@ GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 bot = telebot.TeleBot(TOKEN)
 user_data = {}
 
+# تم ضبط النموذج على إصدار Pro المعتمد
+AI_MODEL = "gemini-2.5-pro"
+
 
 def init_db():
   conn = sqlite3.connect("bot_database.db")
@@ -248,11 +251,10 @@ FOOD_DATABASE = {
 
 
 def ask_ai(prompt_text):
-  url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={GEMINI_API_KEY}"
+  url = f"https://generativelanguage.googleapis.com/v1beta/models/{AI_MODEL}:generateContent?key={GEMINI_API_KEY}"
   headers = {"Content-Type": "application/json"}
   payload = {"contents": [{"parts": [{"text": prompt_text}]}]}
 
-  # محاولة الاتصال مع نظام إعادة المحاولة التلقائية (Retry) لتجنب الـ Timeout
   for attempt in range(3):
     try:
       response = requests.post(
@@ -273,7 +275,7 @@ def ask_ai(prompt_text):
 
 
 def ask_ai_with_image(prompt_text, image_bytes_base64):
-  url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={GEMINI_API_KEY}"
+  url = f"https://generativelanguage.googleapis.com/v1beta/models/{AI_MODEL}:generateContent?key={GEMINI_API_KEY}"
   headers = {"Content-Type": "application/json"}
   payload = {
       "contents": [{
@@ -372,7 +374,6 @@ def forward_and_handle(message):
       return
 
     if str(user_id) == ADMIN_CHAT_ID:
-      text = message.text
       if user_data.get(user_id) and getattr(
           user_data[user_id], "admin_step", None
       ) == "waiting_broadcast":
@@ -982,7 +983,7 @@ def process_goal(message):
     print(f"Error in goal processing: {e}")
 
 
-print("البوت يعمل الآن بدون أخطاء قاعدة البيانات...")
+print("البوت يعمل الآن بنموذج Pro بدون أخطاء...")
 
 while True:
   try:
