@@ -27,7 +27,6 @@ def init_db():
             join_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
     """)
-  # التحقق من وجود عمود is_banned وإضافته إذا كان الجدول قديماً ولم يكن يحتوي عليه
   try:
     cursor.execute("SELECT is_banned FROM users LIMIT 1")
   except sqlite3.OperationalError:
@@ -250,7 +249,7 @@ FOOD_DATABASE = {
 
 def ask_ai(prompt_text):
   try:
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key={GEMINI_API_KEY}"
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={GEMINI_API_KEY}"
     headers = {"Content-Type": "application/json"}
     payload = {"contents": [{"parts": [{"text": prompt_text}]}]}
     response = requests.post(
@@ -270,7 +269,7 @@ def ask_ai(prompt_text):
 
 def ask_ai_with_image(prompt_text, image_bytes_base64):
   try:
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key={GEMINI_API_KEY}"
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={GEMINI_API_KEY}"
     headers = {"Content-Type": "application/json"}
     payload = {
         "contents": [{
