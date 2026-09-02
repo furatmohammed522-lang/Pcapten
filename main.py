@@ -6,7 +6,6 @@ from google import genai
 TOKEN = "8926250265:AAGnD4oGlgcOJBtHZ60n5A9UxlrnVtCHvbM"
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
-# تهيئة العميل بالطريقة الرسمية والحديثة
 client = genai.Client(api_key=GEMINI_API_KEY)
 
 bot = telebot.TeleBot(TOKEN)
@@ -34,12 +33,8 @@ def ask_ai(prompt_text, user_profile):
     full_prompt = f"{system_prompt}\n\nسؤال المستخدم أو طلبه: {prompt_text}"
     
     try:
-        # استخدام أحدث نموذج متطور وسريع عبر المكتبة الجديدة
         response = client.models.generate_content(
-           response = client.models.generate_content(
             model='gemini-3.6-flash',
-            contents=full_prompt,
-        )
             contents=full_prompt,
         )
         if response and response.text:
@@ -140,5 +135,5 @@ def handle_message(message):
     bot.reply_to(message, ai_response, reply_markup=main_menu_markup())
 
 bot.remove_webhook()
-print("تم تشغيل البوت بنجاح عبر المكتبة الرسمية الجديدة...")
+print("تم تشغيل البوت بنجاح...")
 bot.infinity_polling(timeout=60, long_polling_timeout=60)
