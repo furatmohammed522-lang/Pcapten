@@ -1,15 +1,13 @@
 import os
 import telebot
 from telebot import types
-import google.generativeai as genai
+from google import genai
 
 TOKEN = "8926250265:AAGnD4oGlgcOJBtHZ60n5A9UxlrnVtCHvbM"
-
-# نسحب المفتاح بأمان تام من متغيرات البيئة للاستضافة
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
-genai.configure(api_key=GEMINI_API_KEY)
-model = genai.GenerativeModel('gemini-1.5-flash')
+# تهيئة العميل بالطريقة الرسمية والحديثة
+client = genai.Client(api_key=GEMINI_API_KEY)
 
 bot = telebot.TeleBot(TOKEN)
 user_data = {}
@@ -28,21 +26,25 @@ def main_menu_markup():
 def ask_ai(prompt_text, user_profile):
     system_prompt = (
         "أنت مدرب كمال أجسام وتخسيس محترف جداً، أسلوبك حماسي ناري مشجع يدفع للبطولات! "
-        f"معلومات المستخدم الحالي: الجنس: {user_profile.get('gender', 'غير محدد')}، "
-        f"الهدف الحالي أو الوضع: {user_profile.get('current_focus', 'غير محدد')}."
+        f"معلومات المستخدم الحالي: الجنس: {user_profile.get('gender', 'غير')}، "
+        f"الهدف الحالي أو الوضع: {user_profile.get('current_focus', 'غير')}."
         " جاوب دائماً باللغة العربية وبنبرة حماسية قوية مع مراعاة تفاصيل جسم وفيسيولوجيا جنس المستخدم."
     )
     
     full_prompt = f"{system_prompt}\n\nسؤال المستخدم أو طلبه: {prompt_text}"
     
     try:
-        response = model.generate_content(full_prompt)
+        # استخدام أحدث نموذج متطور وسريع عبر المكتبة الجديدة
+        response = client.models.generate_content(
+            model='gemini-2.5-flash',
+            contents=full_prompt,
+        )
         if response and response.text:
             return response.text
         else:
             return "يا بطل، صار عدنا رد فارغ من الذكاء الاصطناعي، جرب مرة ثانية!"
     except Exception as e:
-        return f"يا بطل صار عدنا خلل بالاتصال مع جيمني: {e}"
+        return f"يا بطل صار عدنا خلل بالاتصال: {e}"
 
 @bot.message_handler(commands=['start'])
 def send_welcome(message):
@@ -135,5 +137,5 @@ def handle_message(message):
     bot.reply_to(message, ai_response, reply_markup=main_menu_markup())
 
 bot.remove_webhook()
-print("تم تشغيل البوت بنجاح...")
+print("تم تشغيل البوت بنجاح عبر المكتبة الرسمية الجديدة...")
 bot.infinity_polling(timeout=60, long_polling_timeout=60)
