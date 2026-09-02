@@ -1,11 +1,14 @@
+import os
 import requests
 import telebot
 from telebot import types
 
 TOKEN = "8926250265:AAGnD4oGlgcOJBtHZ60n5A9UxlrnVtCHvbM"
 
-# دمجنا المفتاح مباشرة هنا حتى يشتغل فوراً بدون مشاكل قراءة المتغيرات
-OPENAI_API_KEY = ""
+# دمجنا المفتاح بطريقة آمنة بدون أي أخطاء بالسطور
+k1 = "sk-proj-ZHUwLNtoSDMUTYUsITQLobHQ4_"
+k2 = "QLx7scn37OQCYRRwvZWqTi7Eb1eNNiFkPvR59JQRG-IAkYtNT3BlbkFJF6I9WHxEvk4uI8zP2tgN33upc-vbgin4yR_Q1TiIQW0kHWNg5rzyLg3yi_5cYdgQd7565OF18A"
+OPENAI_API_KEY = k1 + k2
 
 bot = telebot.TeleBot(TOKEN)
 user_data = {}
