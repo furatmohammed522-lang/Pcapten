@@ -1,9 +1,15 @@
-import requests
+import os
 import telebot
 from telebot import types
+import google.generativeai as genai
 
 TOKEN = "8926250265:AAGnD4oGlgcOJBtHZ60n5A9UxlrnVtCHvbM"
-GEMINI_API_KEY = ""
+
+# نسحب المفتاح بأمان تام من متغيرات البيئة للاستضافة
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
+
+genai.configure(api_key=GEMINI_API_KEY)
+model = genai.GenerativeModel('gemini-1.5-flash')
 
 bot = telebot.TeleBot(TOKEN)
 user_data = {}
@@ -20,8 +26,6 @@ def main_menu_markup():
     return markup
 
 def ask_ai(prompt_text, user_profile):
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={GEMINI_API_KEY}"
-    
     system_prompt = (
         "أنت مدرب كمال أجسام وتخسيس محترف جداً، أسلوبك حماسي ناري مشجع يدفع للبطولات! "
         f"معلومات المستخدم الحالي: الجنس: {user_profile.get('gender', 'غير محدد')}، "
@@ -29,28 +33,14 @@ def ask_ai(prompt_text, user_profile):
         " جاوب دائماً باللغة العربية وبنبرة حماسية قوية مع مراعاة تفاصيل جسم وفيسيولوجيا جنس المستخدم."
     )
     
-    payload = {
-        "contents": [
-            {
-                "parts": [
-                    {"text": f"{system_prompt}\n\nسؤال المستخدم أو طلبه: {prompt_text}"}
-                ]
-            }
-        ]
-    }
-    
-    headers = {
-        "Content-Type": "application/json"
-    }
+    full_prompt = f"{system_prompt}\n\nسؤال المستخدم أو طلبه: {prompt_text}"
     
     try:
-        response = requests.post(url, headers=headers, json=payload, timeout=30)
-        res_json = response.json()
-        
-        if "candidates" in res_json and len(res_json["candidates"]) > 0:
-            return res_json["candidates"][0]["content"]["parts"][0]["text"]
+        response = model.generate_content(full_prompt)
+        if response and response.text:
+            return response.text
         else:
-            return f"يا بطل، صار عدنا رد غير متوقع من الخادم: {res_json}"
+            return "يا بطل، صار عدنا رد فارغ من الذكاء الاصطناعي، جرب مرة ثانية!"
     except Exception as e:
         return f"يا بطل صار عدنا خلل بالاتصال مع جيمني: {e}"
 
@@ -145,5 +135,5 @@ def handle_message(message):
     bot.reply_to(message, ai_response, reply_markup=main_menu_markup())
 
 bot.remove_webhook()
-print("تم تشغيل البوت بنجاح على نظام Gemini المجاني...")
+print("تم تشغيل البوت بنجاح...")
 bot.infinity_polling(timeout=60, long_polling_timeout=60)
