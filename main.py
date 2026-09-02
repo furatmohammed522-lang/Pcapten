@@ -11,7 +11,7 @@ TOKEN = "8926250265:AAGnD4oGlgcOJBtHZ60n5A9UxlrnVtCHvbM"
 ADMIN_CHAT_ID = "582282128"
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
-bot = telebot.TeleBot(os.environ.get("TOKEN"))
+bot = telebot.TeleBot(TOKEN)
 user_data = {}
 
 # تم ضبط النموذج على إصدار Pro المعتمد
