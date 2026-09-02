@@ -15,8 +15,7 @@ bot = telebot.TeleBot(TOKEN)
 user_data = {}
 
 # تم ضبط النموذج على إصدار Pro المعتمد
-AI_MODEL = "gemini-2.5-pro"
-
+AI_MODEL = "gemini-1.5-flash"
 
 def init_db():
   conn = sqlite3.connect("bot_database.db")
@@ -984,7 +983,7 @@ def process_goal(message):
 
 
 print("البوت يعمل الآن بنموذج Pro بدون أخطاء...")
-
+bot.remove_webhook()
 while True:
   try:
     bot.infinity_polling(timeout=60, long_polling_timeout=60)
