@@ -36,7 +36,10 @@ def ask_ai(prompt_text, user_profile):
     try:
         # استخدام أحدث نموذج متطور وسريع عبر المكتبة الجديدة
         response = client.models.generate_content(
-            model='gemini-2.5-flash',
+           response = client.models.generate_content(
+            model='gemini-3.6-flash',
+            contents=full_prompt,
+        )
             contents=full_prompt,
         )
         if response and response.text:
