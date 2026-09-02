@@ -34,7 +34,7 @@ def ask_ai(prompt_text, user_profile):
     
     try:
         response = client.models.generate_content(
-            model='gemini-3.6-flash',
+            model='gemini-1.5-flash',
             contents=full_prompt,
         )
         if response and response.text:
