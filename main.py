@@ -248,55 +248,64 @@ FOOD_DATABASE = {
 
 
 def ask_ai(prompt_text):
-  try:
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={GEMINI_API_KEY}"
-    headers = {"Content-Type": "application/json"}
-    payload = {"contents": [{"parts": [{"text": prompt_text}]}]}
-    response = requests.post(
-        url, headers=headers, data=json.dumps(payload), timeout=30
-    )
-    res_json = response.json()
+  url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={GEMINI_API_KEY}"
+  headers = {"Content-Type": "application/json"}
+  payload = {"contents": [{"parts": [{"text": prompt_text}]}]}
 
-    if "candidates" in res_json and len(res_json["candidates"]) > 0:
-      return res_json["candidates"][0]["content"]["parts"][0]["text"]
-    elif "error" in res_json:
-      return f"خطأ من جوجل API: {res_json['error'].get('message', 'خطأ غير معروف')}"
-    else:
-      return f"استجابة غير متوقعة من السيرفر: {res_json}"
-  except Exception as e:
-    return f"حدث خطأ تقني في الاتصال: {e}"
+  # محاولة الاتصال مع نظام إعادة المحاولة التلقائية (Retry) لتجنب الـ Timeout
+  for attempt in range(3):
+    try:
+      response = requests.post(
+          url, headers=headers, data=json.dumps(payload), timeout=45
+      )
+      res_json = response.json()
+
+      if "candidates" in res_json and len(res_json["candidates"]) > 0:
+        return res_json["candidates"][0]["content"]["parts"][0]["text"]
+      elif "error" in res_json:
+        return f"خطأ من جوجل API: {res_json['error'].get('message', 'خطأ غير معروف')}"
+      else:
+        return f"استجابة غير متوقعة من السيرفر: {res_json}"
+    except Exception as e:
+      if attempt == 2:
+        return f"حدث خطأ تقني في الاتصال بعد عدة محاولات: {e}"
+      time.sleep(2)
 
 
 def ask_ai_with_image(prompt_text, image_bytes_base64):
-  try:
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={GEMINI_API_KEY}"
-    headers = {"Content-Type": "application/json"}
-    payload = {
-        "contents": [{
-            "parts": [
-                {"text": prompt_text},
-                {
-                    "inline_data": {
-                        "mime_type": "image/jpeg",
-                        "data": image_bytes_base64,
-                    }
-                },
-            ]
-        }]
-    }
-    response = requests.post(
-        url, headers=headers, data=json.dumps(payload), timeout=40
-    )
-    res_json = response.json()
+  url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={GEMINI_API_KEY}"
+  headers = {"Content-Type": "application/json"}
+  payload = {
+      "contents": [{
+          "parts": [
+              {"text": prompt_text},
+              {
+                  "inline_data": {
+                      "mime_type": "image/jpeg",
+                      "data": image_bytes_base64,
+                  }
+              },
+          ]
+      }]
+  }
 
-    if "candidates" in res_json and len(res_json["candidates"]) > 0:
-      return res_json["candidates"][0]["content"]["parts"][0]["text"]
-    elif "error" in res_json:
-      return f"خطأ من جوجل API: {res_json['error'].get('message', 'خطأ غير معروف')}"
-    else:
-      return f"استجابة غير متوقعة من السيرفر: {res_json}"
-  except Exception as e:
-    return f"حدث خطأ تقني في تحليل الصورة: {e}"
+  for attempt in range(3):
+    try:
+      response = requests.post(
+          url, headers=headers, data=json.dumps(payload), timeout=50
+      )
+      res_json = response.json()
+
+      if "candidates" in res_json and len(res_json["candidates"]) > 0:
+        return res_json["candidates"][0]["content"]["parts"][0]["text"]
+      elif "error" in res_json:
+        return f"خطأ من جوجل API: {res_json['error'].get('message', 'خطأ غير معروف')}"
+      else:
+        return f"استجابة غير متوقعة من السيرفر: {res_json}"
+    except Exception as e:
+      if attempt == 2:
+        return f"حدث خطأ تقني في تحليل الصورة بعد عدة محاولات: {e}"
+      time.sleep(2)
 
 
 @bot.message_handler(commands=["start"])
