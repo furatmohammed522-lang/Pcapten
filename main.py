@@ -9,7 +9,6 @@ OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 bot = telebot.TeleBot(TOKEN)
 user_data = {}
 
-# دالة إرسال الأزرار الرئيسية العالمية
 def main_menu_markup():
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2)
     markup.add(
@@ -80,7 +79,6 @@ def handle_message(message):
 
     user_info = user_data[chat_id]
 
-    # مرحلة اختيار الجنس
     if user_info.get("step") == "waiting_gender":
         if "ذكر" in text:
             user_info["gender"] = "ذكر"
@@ -99,7 +97,6 @@ def handle_message(message):
         )
         return
 
-    # معالجة الأزرار العالمية الاحترافية
     if text == '🔥 تحدي اليوم الناري':
         user_info["current_focus"] = "تحدي اليوم"
         prompt = "اعطني تحدي رياضي ناري قصير ومحفز لليوم يجب على البطل تنفيذه لتحطيم الكسل!"
@@ -142,11 +139,10 @@ def handle_message(message):
         )
         return
 
-    # المحادثة العادية المفتوحة مع الذكاء الاصطناعي مع بقاء الأزرار ظاهرة
     bot.send_chat_action(chat_id, 'typing')
     ai_response = ask_ai(text, user_info)
     bot.reply_to(message, ai_response, reply_markup=main_menu_markup())
 
 bot.remove_webhook()
-print("تم تشغيل البوت بنجاح مع الأزرار العالمية...")
+print("تم تشغيل البوت بنجاح...")
 bot.infinity_polling(timeout=60, long_polling_timeout=60)
