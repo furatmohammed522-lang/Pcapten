@@ -3,6 +3,7 @@ import telebot
 from telebot import types
 
 TOKEN = "8926250265:AAGnD4oGlgcOJBtHZ60n5A9UxlrnVtCHvbM"
+GEMINI_API_KEY = ""
 
 bot = telebot.TeleBot(TOKEN)
 user_data = {}
@@ -19,15 +20,7 @@ def main_menu_markup():
     return markup
 
 def ask_ai(prompt_text, user_profile):
-    url = "https://api.openai.com/v1/chat/completions"
-    
-    # حطينالك المفتاح صريح ومباشر هنا حتى يندز بالطلب وماكو أي مجال للخطأ
-    api_key = "sk-proj-ZHUwLNtoSDMUTYUsITQLobHQ4_" + "QLx7scn37OQCYRRwvZWqTi7Eb1eNNiFkPvR59JQRG-IAkYtNT3BlbkFJF6I9WHxEvk4uI8zP2tgN33upc-vbgin4yR_Q1TiIQW0kHWNg5rzyLg3yi_5cYdgQd7565OF18A"
-    
-    headers = {
-        "Content-Type": "application/json",
-        "Authorization": f"Bearer {api_key}"
-    }
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={GEMINI_API_KEY}"
     
     system_prompt = (
         "أنت مدرب كمال أجسام وتخسيس محترف جداً، أسلوبك حماسي ناري مشجع يدفع للبطولات! "
@@ -37,23 +30,29 @@ def ask_ai(prompt_text, user_profile):
     )
     
     payload = {
-        "model": "gpt-4o-mini",
-        "messages": [
-            {"role": "system", "content": system_prompt},
-            {"role": "user", "content": prompt_text}
-        ],
-        "temperature": 0.7
+        "contents": [
+            {
+                "parts": [
+                    {"text": f"{system_prompt}\n\nسؤال المستخدم أو طلبه: {prompt_text}"}
+                ]
+            }
+        ]
+    }
+    
+    headers = {
+        "Content-Type": "application/json"
     }
     
     try:
         response = requests.post(url, headers=headers, json=payload, timeout=30)
         res_json = response.json()
-        if "choices" in res_json and len(res_json["choices"]) > 0:
-            return res_json["choices"][0]["message"]["content"]
+        
+        if "candidates" in res_json and len(res_json["candidates"]) > 0:
+            return res_json["candidates"][0]["content"]["parts"][0]["text"]
         else:
             return f"يا بطل، صار عدنا رد غير متوقع من الخادم: {res_json}"
     except Exception as e:
-        return f"يا بطل صار عدنا خلل بالاتصال مع تشات جي بي تي: {e}"
+        return f"يا بطل صار عدنا خلل بالاتصال مع جيمني: {e}"
 
 @bot.message_handler(commands=['start'])
 def send_welcome(message):
@@ -146,5 +145,5 @@ def handle_message(message):
     bot.reply_to(message, ai_response, reply_markup=main_menu_markup())
 
 bot.remove_webhook()
-print("تم تشغيل البوت بنجاح...")
+print("تم تشغيل البوت بنجاح على نظام Gemini المجاني...")
 bot.infinity_polling(timeout=60, long_polling_timeout=60)
